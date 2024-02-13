@@ -1,0 +1,8 @@
+To generate the build system in project root:
+
+    cmake -S . -B build
+
+To build the project in project root:
+
+    cmake --build build
+

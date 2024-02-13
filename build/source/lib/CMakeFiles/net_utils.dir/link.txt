@@ -1,0 +1,2 @@
+/usr/bin/ar qc ../../lib/libnet_utils.a CMakeFiles/net_utils.dir/src/net_utils.cpp.o
+/usr/bin/ranlib ../../lib/libnet_utils.a
