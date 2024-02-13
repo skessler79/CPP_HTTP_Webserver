@@ -1,46 +1,51 @@
 #include <cstring>
 #include <arpa/inet.h>
 
-#include <InetAddress.hpp>
+#include "InetAddress.hpp"
 
-utils::InetAddress::InetAddress(const uint16_t port, bool ipv6 = false)
-    : isIPv6(ipv6)
+utils::InetAddress::InetAddress(const uint16_t port, bool isIPv6)
+    : m_isIPv6(isIPv6)
 {
-    if(ipv6)
+    std::memset(&m_Addr, 0, sizeof(m_Addr));
+
+    if(isIPv6)
     {
         // IPv6
-        std::memset(&m_Addr6, 0, sizeof(m_Addr6));
-        m_Addr6.sin6_family = AF_INET6;
-        m_Addr6.sin6_addr = in6addr_any;            // TODO : Can maybe adjust this to use loopback also
-        m_Addr6.sin6_port = htons(port);
+        struct sockaddr_in6 addr6 {};
+        addr6.sin6_family = AF_INET6;
+        addr6.sin6_addr = in6addr_any;
+        addr6.sin6_port = htons(port);
+        m_Addr = addr6;
     }
     else
     {
         // IPv4
-        std::memset(&m_Addr, 0, sizeof(m_Addr));
-        m_Addr.sin_family = AF_INET;
-        m_Addr.sin_addr.s_addr = INADDR_ANY;        // TODO : Can maybe adjust this to use loopback also
-        m_Addr.sin_port = htons(port);
+        struct sockaddr_in addr {};
+        addr.sin_family = AF_INET;
+        addr.sin_addr.s_addr = INADDR_ANY;
+        addr.sin_port = htons(port);
+        m_Addr = addr;
     }
 }
 
-utils::InetAddress::InetAddress(const std::string& ip, const uint16_t port, bool ipv6 = false)
-    : isIPv6(ipv6)
+// TODO : Finish this
+utils::InetAddress::InetAddress(const std::string& ip, const uint16_t port, bool isIPv6)
+    : m_isIPv6(isIPv6)
 {
-    if(ipv6)
+
+}
+
+const sockaddr* utils::InetAddress::getSockAddr() const
+{
+    return std::visit([](auto&& arg) -> const sockaddr*
     {
-        // IPv6
-        std::memset(&m_Addr6, 0, sizeof(m_Addr6));
-        m_Addr.sin_family = AF_INET6;
-        m_Addr.sin_port = htons(port);
-        inet_pton(AF_INET6, ip.c_str(), &m_Addr6.sin6_addr);
-    }
-    else
-    {
-        // IPv4
-        std::memset(&m_Addr, 0, sizeof(m_Addr));
-        m_Addr.sin_family = AF_INET;
-        m_Addr.sin_port = htons(port);
-        inet_pton(AF_INET, ip.c_str(), &m_Addr.sin_addr);
-    }
+        return reinterpret_cast<const sockaddr*>(&arg);
+    }, m_Addr);
+}
+
+const socklen_t utils::InetAddress::getSocklen() const
+{
+    if(m_isIPv6)
+        return sizeof(sockaddr_in6);
+    return sizeof(sockaddr_in);
 }

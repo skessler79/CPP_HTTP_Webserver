@@ -17,8 +17,8 @@ int main(int argc, char** argv)
     int server_fd;
     int new_socket;
     int valread;
-    struct sockaddr_in address;
-    int addrlen = sizeof(address);
+    // struct sockaddr_in address;
+    // int addrlen = sizeof(address);
 
     // char* hello = "HTTP/1.1 200 OK\n\nHello World!";
     std::string hello = "HTTP/1.1 200 OK\n\n";
@@ -31,9 +31,10 @@ int main(int argc, char** argv)
     std::stringstream ss;
     ss << inFile.rdbuf();
     hello += ss.str();
+    // std::cout << hello << std::endl;
     // -----
 
-    // std::cout << hello << std::endl;
+    utils::InetAddress inetAddress(config::PORT, false);
 
 
     // Creating socket file descriptor
@@ -43,12 +44,6 @@ int main(int argc, char** argv)
         exit(EXIT_FAILURE);
     }
 
-    address.sin_family = AF_INET;
-    address.sin_addr.s_addr = INADDR_ANY;
-    address.sin_port = htons(config::PORT);
-
-    memset(address.sin_zero, '\0', sizeof(address.sin_zero));
-
     // Reuse socket if socket is still in use in kernel. Avoids "Address already in use" error message
     int yes = 1;
     if(setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(yes)) == -1)
@@ -57,9 +52,7 @@ int main(int argc, char** argv)
         exit(EXIT_FAILURE);
     }
 
-    std::cout << address.sin_addr.s_addr << std::endl;
-
-    if(bind(server_fd, (struct sockaddr*)&address, sizeof(address)) < 0)
+    if(bind(server_fd, inetAddress.getSockAddr(), inetAddress.getSocklen()) < 0)
     {
         perror("In bind");
         exit(EXIT_FAILURE);
@@ -75,7 +68,9 @@ int main(int argc, char** argv)
     {
         printf("\n+++++ Waiting for a new connection +++++\n\n");
 
-        if((new_socket = accept(server_fd, (struct sockaddr*)&address, (socklen_t*)&addrlen)) < 0)
+        // // TODO : Fix the casting and the problems
+        socklen_t addrlen = sizeof(sockaddr_in);
+        if((new_socket = accept(server_fd, (sockaddr*)inetAddress.getSockAddr(), &addrlen)) < 0)
         {
             perror("In accept");
             exit(EXIT_FAILURE);

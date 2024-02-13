@@ -2,5 +2,5 @@
 
 namespace config
 {
-    constexpr int PORT = 8080;
+    constexpr uint16_t PORT = 8080;
 }

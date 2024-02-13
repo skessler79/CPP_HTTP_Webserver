@@ -1,5 +1,6 @@
 #include <netinet/in.h>
 #include <string>
+#include <variant>
 
 namespace utils
 {
@@ -7,16 +8,14 @@ namespace utils
     {
     public:
 
-        InetAddress(const uint16_t port, bool ipv6 = false);
-        InetAddress(const std::string& ip, const uint16_t port, bool ipv6 = false);
+        InetAddress(const uint16_t port, bool isIPv6 = false);
+        InetAddress(const std::string& ip, const uint16_t port, bool isIPv6 = false);
 
+        const sockaddr* getSockAddr() const;
+        const socklen_t getSocklen() const;
     private:
-        union
-        {
-            struct sockaddr_in m_Addr;
-            struct sockaddr_in6 m_Addr6;
-        };
+        std::variant<struct sockaddr_in, struct sockaddr_in6>m_Addr;
 
-        bool isIPv6 {false};
+        bool m_isIPv6 {false};
     };
 }
