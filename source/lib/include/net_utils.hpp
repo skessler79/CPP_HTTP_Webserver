@@ -7,4 +7,4 @@
 namespace utils
 {
     std::string getAddressString(const sockaddr* sockAddr);
-} // namespace net_utils
+} // namespace utils

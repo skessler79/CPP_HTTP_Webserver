@@ -1,3 +1,5 @@
+#pragma once
+
 #include <netinet/in.h>
 #include <string>
 #include <variant>
@@ -7,7 +9,6 @@ namespace utils
     class InetAddress
     {
     public:
-
         InetAddress(const uint16_t port, bool isIPv6 = false);
         InetAddress(const std::string& ip, const uint16_t port, bool isIPv6 = false);
 
