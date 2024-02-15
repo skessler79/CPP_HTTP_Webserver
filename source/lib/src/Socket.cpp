@@ -36,7 +36,7 @@ Socket& Socket::operator=(Socket&& other) noexcept
 {
     if(this != &other)
     {
-        if(m_SockFd <= 0)
+        if(m_SockFd >= 0)
             ::close(m_SockFd);
         
         m_SockFd = other.m_SockFd;
