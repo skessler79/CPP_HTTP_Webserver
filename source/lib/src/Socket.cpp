@@ -3,7 +3,10 @@
 #include "Config.hpp"
 #include "lib/include/Socket.hpp"
 
-utils::Socket::Socket(int family)
+namespace utils
+{
+
+Socket::Socket(int family)
     : m_SockFd(::socket(family, SOCK_STREAM, IPPROTO_IP))
 {
     if (m_SockFd == 0)
@@ -13,7 +16,7 @@ utils::Socket::Socket(int family)
     }
 }
 
-utils::Socket::Socket(int family, int socktype, int protocol)
+Socket::Socket(int family, int socktype, int protocol)
     : m_SockFd(::socket(family, socktype, protocol))
 {
     if (m_SockFd == 0)
@@ -23,30 +26,50 @@ utils::Socket::Socket(int family, int socktype, int protocol)
     }
 }
 
-utils::Socket::~Socket()
+Socket::Socket(Socket&& other) noexcept
+    : m_SockFd(other.m_SockFd)
+{
+    other.m_SockFd = -1;
+}
+
+Socket& Socket::operator=(Socket&& other) noexcept
+{
+    if(this != &other)
+    {
+        if(m_SockFd <= 0)
+            ::close(m_SockFd);
+        
+        m_SockFd = other.m_SockFd;
+        other.m_SockFd = -1;
+    }
+
+    return *this;
+}
+
+Socket::~Socket() noexcept
 {
     if (m_SockFd >= 0)
         ::close(m_SockFd);
 }
 
-utils::Socket utils::Socket::SocketFromSockFd(int sockFd)
+Socket Socket::SocketFromSockFd(int sockFd)
 {
-    utils::Socket newSock;
+    Socket newSock;
     newSock.setSockFd(sockFd);
     return newSock;
 }
 
-int utils::Socket::getSockFd()
+int Socket::getSockFd()
 {
     return m_SockFd;
 }
 
-void utils::Socket::setSockFd(int sockFd)
+void Socket::setSockFd(int sockFd)
 {
     this->m_SockFd = sockFd;
 }
 
-void utils::Socket::listen()
+void Socket::listen()
 {
     int ret = ::listen(m_SockFd, config::SK_SOCK_MAX_QUEUE);
 
@@ -57,7 +80,7 @@ void utils::Socket::listen()
     }
 }
 
-void utils::Socket::bindAddress(const utils::InetAddress& inetAddress)
+void Socket::bindAddress(const InetAddress& inetAddress)
 {
     int ret = ::bind(m_SockFd, inetAddress.getSockAddr(), inetAddress.getSocklen());
 
@@ -68,7 +91,7 @@ void utils::Socket::bindAddress(const utils::InetAddress& inetAddress)
     }
 }
 
-void utils::Socket::setReuseAddr(bool reuse)
+void Socket::setReuseAddr(bool reuse)
 {
     int yes = reuse ? 1 : 0;
     int ret = setsockopt(m_SockFd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(yes));
@@ -80,7 +103,7 @@ void utils::Socket::setReuseAddr(bool reuse)
     }
 }
 
-utils::Socket utils::Socket::accept()
+Socket Socket::accept()
 {
     struct sockaddr_storage theirAddr;
     socklen_t len = sizeof(theirAddr);
@@ -94,9 +117,10 @@ utils::Socket utils::Socket::accept()
         exit(EXIT_FAILURE);
     }
 
-    utils::Socket newSock;
+    Socket newSock;
     newSock.setSockFd(newSockFd);
 
     return newSock;
 }
 
+} // namespace utils

@@ -10,7 +10,10 @@ namespace utils
         Socket() = default;
         Socket(int family);
         Socket(int family, int socktype, int protocol);
-        ~Socket();
+        Socket(const Socket&) = delete;
+        Socket(Socket&& other) noexcept;
+        Socket& operator=(Socket&& other) noexcept;
+        ~Socket() noexcept;
 
         static Socket SocketFromSockFd(int sockFd);
 
@@ -20,10 +23,10 @@ namespace utils
         void listen();
         void bindAddress(const InetAddress& inetAddress);
         void setReuseAddr(bool yes);
-        // Socket accept(InetAddress inetAddress);
         Socket accept();
 
     private:
+    // TODO : Wrap `m_SockFd` with unique_ptr with custom `close` deleter
         int m_SockFd;
     };
 }
