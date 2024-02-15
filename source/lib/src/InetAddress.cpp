@@ -1,7 +1,7 @@
 #include <cstring>
 #include <arpa/inet.h>
 
-#include "InetAddress.hpp"
+#include "lib/include/InetAddress.hpp"
 
 utils::InetAddress::InetAddress(const uint16_t port, bool isIPv6)
     : m_isIPv6(isIPv6)

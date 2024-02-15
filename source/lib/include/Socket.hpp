@@ -1,6 +1,6 @@
 #pragma once
 
-#include "InetAddress.hpp"
+#include "lib/include/InetAddress.hpp"
 
 namespace utils
 {

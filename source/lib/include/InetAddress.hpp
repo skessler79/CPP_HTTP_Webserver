@@ -14,6 +14,7 @@ namespace utils
 
         const sockaddr* getSockAddr() const;
         const socklen_t getSocklen() const;
+
     private:
         std::variant<struct sockaddr_in, struct sockaddr_in6>m_Addr;
 
