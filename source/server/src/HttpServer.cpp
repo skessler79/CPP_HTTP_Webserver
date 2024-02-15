@@ -7,7 +7,7 @@
 #include "lib/include/Socket.hpp"
 
 server::HttpServer::HttpServer(const utils::InetAddress& inetAddress)
-    : m_InetAddress(utils::InetAddress(config::SK_PORT, false)),
+    : m_InetAddress(inetAddress),
       m_Socket(utils::Socket(AF_INET))
 {
     m_Socket.setReuseAddr(true);
