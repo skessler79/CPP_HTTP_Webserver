@@ -5,6 +5,7 @@
 #include "Config.hpp"
 #include "server/include/HttpServer.hpp"
 #include "lib/include/Socket.hpp"
+#include "lib/include/HttpResponse.hpp"
 
 server::HttpServer::HttpServer(const utils::InetAddress& inetAddress)
     : m_InetAddress(inetAddress),
@@ -16,16 +17,19 @@ server::HttpServer::HttpServer(const utils::InetAddress& inetAddress)
 
 void server::HttpServer::start()
 {
-    // -----
-    // TODO : Move this to something to manage response...
-    std::string hello = "HTTP/1.1 200 OK\n\n";
-    std::ifstream inFile;
-    inFile.open("index.html");
-    std::stringstream ss;
-    ss << inFile.rdbuf();
-    hello += ss.str();
-    // std::cout << hello << std::endl;
-    // -----
+    // // -----
+    // // TODO : Move this to something to manage response...
+    // std::string hello = "HTTP/1.1 200 OK\n\n";
+    // std::ifstream inFile;
+    // inFile.open("index.html");
+    // std::stringstream ss;
+    // ss << inFile.rdbuf();
+    // hello += ss.str();
+    // // std::cout << hello << std::endl;
+    // // -----
+
+    utils::HttpResponse httpResponse;
+    std::string hello = httpResponse.makeFullResponse();
 
     m_Socket.listen();
 
