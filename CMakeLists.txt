@@ -16,6 +16,8 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 include_directories(${CMAKE_SOURCE_DIR}/source)
 
 # Add subdirectories
+add_subdirectory(source)
 add_subdirectory(source/lib)
 add_subdirectory(source/server)
+add_subdirectory(source/http)
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "lib/include/HttpTypes.hpp"
+#include "http/include/HttpTypes.hpp"
 
 namespace utils
 {

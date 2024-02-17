@@ -1,15 +1,18 @@
 #include <fstream>
 #include <sstream>
 
-#include "lib/include/HttpResponse.hpp"
+#include "http/include/HttpResponse.hpp"
+#include "server/include/FileRouter.hpp"
 
 namespace utils
 {
 
 HttpResponse::HttpResponse()
-    : m_HttpResponseHeader(HttpResponseHeader())
+    : m_HttpResponseHeader(HttpResponseHeader()),
+      m_FileRouter(server::FileRouter::getInstance())
 {
 }
+
 
 void HttpResponse::setHttpResponseBody(const std::string& httpResponseBody)
 {
@@ -19,16 +22,7 @@ void HttpResponse::setHttpResponseBody(const std::string& httpResponseBody)
 std::string HttpResponse::makeFullResponse()
 {
     std::string res = generateHeaderString();
-
-    // -----
-    // TODO : Move this somewhere else
-    std::ifstream inFile;
-    inFile.open("index.html");
-    std::stringstream ss;
-    ss << inFile.rdbuf();
-    res += ss.str();
-    // -----
-
+    res += m_FileRouter.getFileContentFromPath("index.html");
     return res;
 }
 

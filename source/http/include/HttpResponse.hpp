@@ -2,8 +2,9 @@
 
 #include <string>
 
-#include "lib/include/HttpTypes.hpp"
-#include "lib/include/HttpResponseHeader.hpp"
+#include "http/include/HttpTypes.hpp"
+#include "http/include/HttpResponseHeader.hpp"
+#include "server/include/FileRouter.hpp"
 
 namespace utils
 {
@@ -13,11 +14,12 @@ namespace utils
         HttpResponse();
 
         void setHttpResponseBody(const std::string& httpResponseBody);
-        std::string makeFullResponse();
-        std::string generateHeaderString();
+        std::string makeFullResponse();     // TODO : Should take in parameter of request
+        std::string generateHeaderString();     
 
     private:
         HttpResponseHeader m_HttpResponseHeader;
         std::string m_HttpResponseBody;     // TODO : Might need more than a string?
+        server::FileRouter m_FileRouter;
     };
 }
