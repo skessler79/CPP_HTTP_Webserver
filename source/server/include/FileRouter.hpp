@@ -12,6 +12,14 @@ namespace server
     {
     public:
         FileRouter();
+
+        // Ensuring singleton class never gets copied or moved by accident
+        FileRouter(const FileRouter&) = delete;
+        FileRouter& operator=(const FileRouter&) = delete;
+        FileRouter(FileRouter&&) = delete;
+        FileRouter& operator=(FileRouter&&) = delete;
+
+        // Gets singleton instance of FileRouter
         static FileRouter& getInstance();
 
         std::string getFileContentFromPath(const std::string& path);
