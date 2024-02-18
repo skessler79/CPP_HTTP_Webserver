@@ -1,3 +1,4 @@
+#include <optional>
 
 #include "structures/include/LruCache.hpp"
 
@@ -16,20 +17,22 @@ public:
     {
     }
     
-    V get(K key) {
-        if(!cache.contains(key))
-            return -1;
+    std::optional<V> get(K key) {
+        auto itr = cache.find(key);
+
+        if(itr == cache.end())
+            return std::nullopt;
         
         // Move found node to the tail of list
-        auto itr = cache[key];
-        node_list.splice(node_list.end(), node_list, itr);
-
-        return itr->value;
+        node_list.splice(node_list.end(), node_list, itr->second);
+        return itr->second->value;
     }
     
     void insert(K key, V value) {
+        auto result = get(key);
+
         // If key already exist in the cache, then just move to tail of list
-        if(get(key) != -1)
+        if(result.has_value())
         {
             cache[key]->value = value;
             return;
