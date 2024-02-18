@@ -20,6 +20,5 @@ namespace server
 
     private:
         SK::LruCache<std::string, std::string> m_FileCache;
-        int number;
     };
 }

@@ -8,7 +8,7 @@ namespace server
 {
 
 FileRouter::FileRouter()
-    : m_FileCache(config::SK_FILE_CACHE_CAPACITY), number(69)
+    : m_FileCache(config::SK_FILE_CACHE_CAPACITY)
 {
 }
 
@@ -31,7 +31,6 @@ std::string FileRouter::getFileContentFromPath(const std::string& path)
     std::ifstream file = getFileFromPath(path);
     std::string fileContent = getFileContent(file);
     m_FileCache.insert(path, fileContent);
-    number = 420;
     return fileContent;
 }
 
