@@ -1,14 +1,17 @@
 #pragma once
 
 #include <string>
-#include <unordered_map>
 #include <fstream>
+#include <memory>
+
+#include "structures/include/LruCache.hpp"
 
 namespace server
 {
     class FileRouter
     {
     public:
+        FileRouter();
         static FileRouter& getInstance();
 
         std::string getFileContentFromPath(const std::string& path);
@@ -16,6 +19,7 @@ namespace server
         std::ifstream getFileFromPath(const std::string& path);
 
     private:
-        // TODO : LRU file cache
+        SK::LruCache<std::string, std::string> m_FileCache;
+        int number;
     };
 }

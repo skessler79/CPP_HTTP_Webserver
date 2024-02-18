@@ -20,6 +20,6 @@ namespace utils
     private:
         HttpResponseHeader m_HttpResponseHeader;
         std::string m_HttpResponseBody;     // TODO : Might need more than a string?
-        server::FileRouter m_FileRouter;
+        server::FileRouter& m_FileRouter;
     };
 }
