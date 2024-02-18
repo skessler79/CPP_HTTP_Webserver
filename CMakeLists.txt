@@ -20,4 +20,5 @@ add_subdirectory(source)
 add_subdirectory(source/lib)
 add_subdirectory(source/server)
 add_subdirectory(source/http)
+add_subdirectory(source/structures)
 
