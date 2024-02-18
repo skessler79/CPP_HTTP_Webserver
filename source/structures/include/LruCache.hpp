@@ -3,6 +3,7 @@
 #include <unordered_map>
 #include <list>
 #include <cstdint>
+#include <optional>
 
 template<typename K, typename V>
 class Node;
@@ -12,7 +13,7 @@ class LRUCache {
 public:
     LRUCache(const uint32_t& capacity);
     
-    V get(K key);
+    std::optional<V> get(K key);
     void insert(K key, V value);
 
 private:
