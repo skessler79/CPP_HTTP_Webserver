@@ -1,4 +1,5 @@
 #include <unistd.h>
+#include <vector>
 
 #include "Config.hpp"
 #include "lib/include/Socket.hpp"
@@ -121,6 +122,44 @@ Socket Socket::accept()
     newSock.setSockFd(newSockFd);
 
     return newSock;
+}
+
+std::string Socket::read()
+{
+    std::vector<char> buffer(config::SK_HTTP_REQUEST_BUFFER_SIZE);
+    std::string result;
+
+    // Loop until no more data
+    uint32_t bytesReceived = 0;
+    do
+    {
+        bytesReceived = ::read(m_SockFd, &buffer[0], config::SK_HTTP_REQUEST_BUFFER_SIZE);
+
+        // Appends buffer to result
+        if(bytesReceived < 0)
+        {
+            perror("In read");
+            exit(EXIT_FAILURE);
+        }
+        else
+        {
+            result.append(buffer.cbegin(), buffer.cend());
+        }
+    }
+    while (bytesReceived == config::SK_HTTP_REQUEST_BUFFER_SIZE);
+
+    return result;
+}
+
+void Socket::write(std::string_view str)
+{
+    int ret = ::write(m_SockFd, str.data(), str.length());
+
+    if(ret < 0)
+    {
+        perror("In write");
+        exit(EXIT_FAILURE);
+    }
 }
 
 } // namespace utils

@@ -24,6 +24,11 @@ namespace utils
         void bindAddress(const InetAddress& inetAddress);
         void setReuseAddr(bool yes);
         Socket accept();
+        // TODO : Read and write to and from socket
+        std::string read();
+        void write(std::string_view str);
+
+        // TODO : socket shutdown and close
 
     private:
     // TODO : Wrap `m_SockFd` with unique_ptr with custom `close` deleter

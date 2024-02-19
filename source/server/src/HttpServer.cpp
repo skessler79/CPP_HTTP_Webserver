@@ -7,6 +7,8 @@
 #include "lib/include/Socket.hpp"
 #include "http/include/HttpResponse.hpp"
 
+#include <iostream>
+
 server::HttpServer::HttpServer(const utils::InetAddress& inetAddress)
     : m_InetAddress(inetAddress),
       m_Socket(utils::Socket(AF_INET))
@@ -23,19 +25,20 @@ void server::HttpServer::start()
     {
         printf("\n+++++ Waiting for a new connection +++++\n\n");
 
+        // Create new socket and read from it
         utils::Socket newSock = m_Socket.accept();
-
-        char buffer[30000] = {0};
-        ::read(newSock.getSockFd(), buffer, 30000);
+        std::string readBuffer = newSock.read();
 
         // TODO : Parse HTTP request here...
-        // printf("%s\n", buffer);
+        std::cout << readBuffer << std::endl;
+        std::cout << readBuffer.length() << std::endl;
 
         // Generate HTTP response
         utils::HttpResponse httpResponse;
         std::string hello = httpResponse.makeFullResponse();
 
-        ::write(newSock.getSockFd(), hello.c_str(), hello.length());
+        // Write HTTP response to socket
+        newSock.write(hello);
 
         printf("-----Hello message sent-----\n");
     }
