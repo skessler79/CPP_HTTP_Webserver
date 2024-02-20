@@ -46,11 +46,15 @@ std::string FileRouter::getFileContent(std::ifstream& file)
 
 std::ifstream FileRouter::getFileFromPath(const std::string& path)
 {
-    std::ifstream file;
+    std::ifstream file(path);
 
-    // TODO : Handle error for missing or invalid file
+    // TODO : Should try to throw 404 instead...
+    if(!file.is_open())
+    {
+        perror("File read failed!");
+        exit(EXIT_FAILURE);
+    }
 
-    file.open(path);
     return file;
 }
 

@@ -13,6 +13,12 @@ HttpResponse::HttpResponse()
 {
 }
 
+// HttpResponse::HttpResponse(const std::string& path)
+//     : m_HttpResponseHeader(HttpResponseHeader()),
+//       m_FileRouter(server::FileRouter::getInstance())
+// {
+// }
+
 
 void HttpResponse::setHttpResponseBody(const std::string& httpResponseBody)
 {
@@ -22,7 +28,7 @@ void HttpResponse::setHttpResponseBody(const std::string& httpResponseBody)
 std::string HttpResponse::makeFullResponse()
 {
     std::string res = generateHeaderString();
-    res += m_FileRouter.getFileContentFromPath("index.html");
+    res += m_FileRouter.getFileContentFromPath("site/index.html");
     return res;
 }
 

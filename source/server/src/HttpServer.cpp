@@ -6,6 +6,8 @@
 #include "server/include/HttpServer.hpp"
 #include "lib/include/Socket.hpp"
 #include "http/include/HttpResponse.hpp"
+#include "http/include/HttpRequest.hpp"
+#include "http/include/HttpTypes.hpp"
 
 #include <iostream>
 

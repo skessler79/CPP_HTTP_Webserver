@@ -2,6 +2,22 @@
 
 namespace utils
 {
+    constexpr static std::string_view LINE_END = "\r\n";
+
+    enum HttpRequestMethod
+    {
+        HMethod_Invalid = 0,
+        HMethod_GET,
+        HMethod_HEAD,
+        HMethod_POST,
+        HMethod_PUT,
+        HMethod_DELETE,
+        HMethod_CONNECT,
+        HMethod_OPTIONS,
+        HMethod_TRACE,
+        HMethod_PATCH
+    };
+
     enum HttpVersion
     {
         HVersion_None = 0,
