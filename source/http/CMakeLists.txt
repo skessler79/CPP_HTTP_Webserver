@@ -1,7 +1,8 @@
 # Create a library target called "http"
 add_library(http
     src/HttpResponse.cpp
-    src/HttpRequest.cpp)
+    src/HttpRequest.cpp
+    src/HttpRequestParser.cpp)
 
 # Link with other libraries
 target_link_libraries(http

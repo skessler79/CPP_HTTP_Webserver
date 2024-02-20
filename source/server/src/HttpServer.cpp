@@ -7,6 +7,7 @@
 #include "lib/include/Socket.hpp"
 #include "http/include/HttpResponse.hpp"
 #include "http/include/HttpRequest.hpp"
+#include "http/include/HttpRequestParser.hpp"
 #include "http/include/HttpTypes.hpp"
 
 #include <iostream>
@@ -33,7 +34,9 @@ void server::HttpServer::start()
 
         // TODO : Parse HTTP request here...
         std::cout << readBuffer << std::endl;
-        std::cout << readBuffer.length() << std::endl;
+        // std::cout << readBuffer.length() << std::endl;
+
+        utils::HttpRequest httpRequest = utils::HttpRequestParser::parseRequest(readBuffer);
 
         // Generate HTTP response
         utils::HttpResponse httpResponse;

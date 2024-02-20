@@ -1,6 +1,7 @@
 # Create a library target called "utils"
 add_library(utils
     src/net_utils.cpp
+    src/StringUtils.cpp
     src/InetAddress.cpp
     src/Socket.cpp)
 

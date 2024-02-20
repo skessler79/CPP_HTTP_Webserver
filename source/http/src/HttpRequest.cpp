@@ -9,6 +9,16 @@ HttpRequest::HttpRequest()
 {
 }
 
+HttpRequest::HttpRequest(HttpRequestMethod requestMethod, std::string path, HttpVersion httpVersion,
+                    std::unordered_map<std::string, std::string> headers, std::string body)
+    : m_RequestMethod(requestMethod),
+      m_Path(std::move(path)),
+      m_HttpVersion(httpVersion),
+      m_RequestHeaders(std::move(headers)),
+      m_RequestBody(std::move(body))
+{
+}
+
 const HttpRequestMethod& HttpRequest::getRequestMethod() const
 {
     return m_RequestMethod;

@@ -11,6 +11,8 @@ namespace utils
     {
     public:
         HttpRequest();
+        HttpRequest(HttpRequestMethod requestMethod, std::string path, HttpVersion httpVersion,
+                    std::unordered_map<std::string, std::string> headers, std::string body);
 
         const HttpRequestMethod& getRequestMethod() const;
         void setRequestMethod(HttpRequestMethod requestMethod);

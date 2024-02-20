@@ -2,7 +2,7 @@
 
 namespace utils
 {
-    constexpr static std::string_view LINE_END = "\r\n";
+    constexpr static std::string_view HTTP_LINE_END = "\r\n";
 
     enum HttpRequestMethod
     {
