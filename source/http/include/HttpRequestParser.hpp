@@ -10,6 +10,7 @@ namespace utils
     class HttpRequestParser
     {
     public:
+        // TODO : Need to take in a connection ptr or something to keep track of status code...
         HttpRequestParser() = delete;
 
         static HttpRequest parseRequest(std::string& buffer);

@@ -3,7 +3,6 @@
 #include <string>
 
 #include "http/include/HttpTypes.hpp"
-#include "http/include/HttpResponseHeader.hpp"
 #include "server/include/FileRouter.hpp"
 
 namespace utils
@@ -18,7 +17,9 @@ namespace utils
         std::string generateHeaderString();     
 
     private:
-        HttpResponseHeader m_HttpResponseHeader;
+        HttpVersion m_HttpVersion;
+        HttpStatusCode m_StatusCode;
+        std::unordered_map<std::string, std::string> m_ResponseHeaders;
         std::string m_HttpResponseBody;     // TODO : Might need more than a string?
         server::FileRouter& m_FileRouter;
     };

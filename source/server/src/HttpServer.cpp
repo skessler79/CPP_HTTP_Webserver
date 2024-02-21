@@ -9,6 +9,7 @@
 #include "http/include/HttpRequest.hpp"
 #include "http/include/HttpRequestParser.hpp"
 #include "http/include/HttpTypes.hpp"
+#include "server/include/TcpConnection.hpp"
 
 #include <iostream>
 
@@ -30,20 +31,21 @@ void server::HttpServer::start()
 
         // Create new socket and read from it
         utils::Socket newSock = m_Socket.accept();
-        std::string readBuffer = newSock.read();
 
-        // TODO : Parse HTTP request here...
-        std::cout << readBuffer << std::endl;
-        // std::cout << readBuffer.length() << std::endl;
+        server::TcpConnection connection(std::move(newSock));
+        connection.handleConnection();
 
-        utils::HttpRequest httpRequest = utils::HttpRequestParser::parseRequest(readBuffer);
+        // std::string readBuffer = newSock.read();
 
-        // Generate HTTP response
-        utils::HttpResponse httpResponse;
-        std::string hello = httpResponse.makeFullResponse();
+        // // Parse HTTP request
+        // utils::HttpRequest httpRequest = utils::HttpRequestParser::parseRequest(readBuffer);
 
-        // Write HTTP response to socket
-        newSock.write(hello);
+        // // Generate HTTP response
+        // utils::HttpResponse httpResponse;
+        // std::string hello = httpResponse.makeFullResponse();
+
+        // // Write HTTP response to socket
+        // newSock.write(hello);
 
         printf("-----Hello message sent-----\n");
     }

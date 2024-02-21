@@ -8,8 +8,7 @@ namespace utils
 {
 
 HttpResponse::HttpResponse()
-    : m_HttpResponseHeader(HttpResponseHeader()),
-      m_FileRouter(server::FileRouter::getInstance())
+    : m_FileRouter(server::FileRouter::getInstance())
 {
 }
 
@@ -36,8 +35,12 @@ std::string HttpResponse::generateHeaderString()
 {
     std::string res = "HTTP/";
 
+    // TODO : Temporary
+    m_HttpVersion = HVersion_Http11;
+    m_StatusCode = HStat_OK;
+
     // HTTP Version
-    switch(m_HttpResponseHeader.m_HttpVersion)
+    switch(m_HttpVersion)
     {
     case HVersion_None:
         break;
@@ -56,7 +59,7 @@ std::string HttpResponse::generateHeaderString()
     }
 
     // HTTP status codes
-    switch(m_HttpResponseHeader.m_HttpStatusCode)
+    switch(m_StatusCode)
     {
     case HStat_OK:
         res += "200 OK\n";

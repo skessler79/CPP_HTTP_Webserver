@@ -8,7 +8,8 @@
 # Create a library target called "server"
 add_library(server
     src/HttpServer.cpp
-    src/FileRouter.cpp)
+    src/FileRouter.cpp
+    src/TcpConnection.cpp)
 
 # Link with other libraries
 target_link_libraries(server
