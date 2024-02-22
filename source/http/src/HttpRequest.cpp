@@ -69,6 +69,11 @@ void HttpRequest::setBody(const std::string& body)
     m_RequestBody = body;
 }
 
+void HttpRequest::setBody(std::string&& body)
+{
+    m_RequestBody = std::move(body);
+}
+
 const std::string& HttpRequest::getHeaderBy(const std::string& key) const
 {
     static const std::string emptyStr;
@@ -81,6 +86,11 @@ const std::string& HttpRequest::getHeaderBy(const std::string& key) const
 void HttpRequest::addHeader(const std::string& key, const std::string& value)
 {
     m_RequestHeaders[key] = value;
+}
+
+void HttpRequest::addHeader(std::string&& key, std::string&& value)
+{
+    m_RequestHeaders[std::move(key)] = std::move(value);
 }
 
 void HttpRequest::removeHeaderBy(const std::string& key)

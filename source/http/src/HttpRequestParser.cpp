@@ -8,24 +8,54 @@
 namespace utils
 {
 
+HttpRequestParser::HttpRequestParser()
+    : m_HttpRequest(),
+      m_ParseState(ParseState::ParseRequestLine),
+      m_CurrentStatus(HStat_OK)
+{
+}
+
+HttpStatusCode HttpRequestParser::getCurrentStatus()
+{
+    return m_CurrentStatus;
+}
+
 // TODO : Should probably return an error if there is one
 HttpRequest HttpRequestParser::parseRequest(std::string& buffer)
 {
     auto lines = utils::splitStringView(buffer, HTTP_LINE_END);
 
-    // Parse request line
-    auto [requestMethod, path, httpVersion] = parseRequestLine(lines[0]);
+    while(true)
+    {
+        // An error occured while parsing
+        if(m_CurrentStatus != HStat_OK)
+            break;
+        
+        // Parsing complete
+        if(m_ParseState == ParseState::ParseComplete)
+            break;
+        
+        // Continue parsing
+        switch(m_ParseState)
+        {
+        case ParseState::ParseRequestLine:
+            parseRequestLine(lines[0]);
+            break;
+        
+        case ParseState::ParseHeaders:
+            parseRequestHeaders(lines);
+            break;
+        
+        case ParseState::ParseBody:
+            parseRequestBody(lines);
+            break;
+        }
+    }
 
-    // Parse headers
-    auto headers = parseRequestHeaders(lines);
-
-    // Parse body
-    std::string body = parseRequestBody(lines);
-
-    return HttpRequest{requestMethod, path, httpVersion, headers, body};
+    return m_HttpRequest;
 }
 
-std::tuple<HttpRequestMethod, std::string, HttpVersion> HttpRequestParser::parseRequestLine(std::string_view requestLine)
+void HttpRequestParser::parseRequestLine(std::string_view requestLine)
 {
     auto parts = utils::splitStringView(requestLine, ' ');
 
@@ -36,16 +66,16 @@ std::tuple<HttpRequestMethod, std::string, HttpVersion> HttpRequestParser::parse
         exit(EXIT_FAILURE);
     }
 
-    HttpRequestMethod method = parseMethod(parts[0]);
-    std::string path = parsePath(parts[1]);
-    HttpVersion version = parseVersion(parts[2]);
+    // TODO : Handle error status codes and dont parse any further
+    m_HttpRequest.setRequestMethod(parseMethod(parts[0]));
+    m_HttpRequest.setPath(parsePath(parts[1]));
+    m_HttpRequest.setHttpVersion(parseVersion(parts[2]));
 
-    return {method, path, version};
+    m_ParseState = ParseState::ParseHeaders;
 }
 
-std::unordered_map<std::string, std::string> HttpRequestParser::parseRequestHeaders(const std::vector<std::string_view>& lines)
+void HttpRequestParser::parseRequestHeaders(const std::vector<std::string_view>& lines)
 {
-    std::unordered_map<std::string, std::string> headers;
 
     // Loop from second line to empty line
     for(std::string_view line : std::ranges::drop_view{lines, 1})
@@ -56,12 +86,13 @@ std::unordered_map<std::string, std::string> HttpRequestParser::parseRequestHead
         auto header = utils::splitStringView(line, ':');
         std::string key = std::string(header[0]);
         std::string value = std::string(header[1]);
-        headers[std::move(key)] = std::move(value);
+        m_HttpRequest.addHeader(std::move(key), std::move(value));
     }
-    return headers;
+    
+    m_ParseState = ParseState::ParseBody;
 }
 
-std::string HttpRequestParser::parseRequestBody(const std::vector<std::string_view>& lines)
+void HttpRequestParser::parseRequestBody(const std::vector<std::string_view>& lines)
 {
     // Duplicated computation to find empty line but it's fine for now
     auto bodyStartItr = std::find_if(lines.begin(), lines.end(), [](std::string_view line)
@@ -72,8 +103,10 @@ std::string HttpRequestParser::parseRequestBody(const std::vector<std::string_vi
     std::string body;
     if(bodyStartItr != lines.end())
     {
-        std::advance(bodyStartItr, 1); // Move to start of body
+        // Skip current empty line
+        std::advance(bodyStartItr, 1);
 
+        // Loop until end of body
         while(bodyStartItr != lines.end())
         {
             if(!body.empty())
@@ -83,7 +116,9 @@ std::string HttpRequestParser::parseRequestBody(const std::vector<std::string_vi
             bodyStartItr++;
         }
     }
-    return body;
+    
+    m_HttpRequest.setBody(body);
+    m_ParseState = ParseState::ParseComplete;
 }
 
 // TODO : Implement these properly

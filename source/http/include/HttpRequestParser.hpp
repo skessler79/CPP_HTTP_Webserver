@@ -10,17 +10,30 @@ namespace utils
     class HttpRequestParser
     {
     public:
-        // TODO : Need to take in a connection ptr or something to keep track of status code...
-        HttpRequestParser() = delete;
+        enum class ParseState
+        {
+            ParseRequestLine,
+            ParseHeaders,
+            ParseBody,
+            ParseComplete
+        };
 
-        static HttpRequest parseRequest(std::string& buffer);
+        HttpRequestParser();
+
+        utils::HttpStatusCode getCurrentStatus();
+
+        HttpRequest parseRequest(std::string& buffer);
     
     private:
-        static std::tuple<HttpRequestMethod, std::string, HttpVersion> parseRequestLine(std::string_view requestLine);
-        static std::unordered_map<std::string, std::string> parseRequestHeaders(const std::vector<std::string_view>& lines);
-        static std::string parseRequestBody(const std::vector<std::string_view>& lines);
-        static HttpRequestMethod parseMethod(std::string_view methodStr);
-        static std::string parsePath(std::string_view path);
-        static HttpVersion parseVersion(std::string_view versionStr);
+        void parseRequestLine(std::string_view requestLine);
+        void parseRequestHeaders(const std::vector<std::string_view>& lines);
+        void parseRequestBody(const std::vector<std::string_view>& lines);
+        HttpRequestMethod parseMethod(std::string_view methodStr);
+        std::string parsePath(std::string_view path);
+        HttpVersion parseVersion(std::string_view versionStr);
+
+        HttpRequest m_HttpRequest;
+        ParseState m_ParseState;
+        utils::HttpStatusCode m_CurrentStatus;
     };
 }

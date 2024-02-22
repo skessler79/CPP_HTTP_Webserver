@@ -23,6 +23,8 @@ namespace server
 
         void handleConnection();
 
+        void setHttpRequest(utils::HttpRequest&& httpRequest);
+
     private:
         void handleReadRequest();
         void handleParseRequest();
@@ -35,5 +37,7 @@ namespace server
         std::string m_WriteBuffer;
         utils::HttpRequest m_HttpRequest;
         utils::HttpResponse m_HttpResponse;
+        utils::HttpRequestParser m_RequestParser;
+        utils::HttpStatusCode m_CurrentStatus;
     };
 }

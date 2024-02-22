@@ -24,9 +24,11 @@ namespace utils
         const std::unordered_map<std::string, std::string>& getHeaders() const;
         const std::string& getBody() const;
         void setBody(const std::string& body);
+        void setBody(std::string&& body);
 
         const std::string& getHeaderBy(const std::string& key) const;
         void addHeader(const std::string& key, const std::string& value);
+        void addHeader(std::string&& key, std::string&& value);
         void removeHeaderBy(const std::string& key);
 
     private:
