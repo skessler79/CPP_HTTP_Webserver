@@ -3,6 +3,7 @@
 #include "http/include/HttpTypes.hpp"
 #include "http/include/HttpRequest.hpp"
 #include "http/include/HttpResponse.hpp"
+#include "http/include/HttpRequestParser.hpp"
 #include "lib/include/Socket.hpp"
 
 namespace server

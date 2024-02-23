@@ -9,9 +9,25 @@ namespace utils
     class HttpResponseGenerator
     {
     public:
+        enum class GenerateState
+        {
+            GenerateStatusLine,
+            GenerateHeaders,
+            GenerateBody,
+            GenerateComplete
+        };
 
-        static HttpResponse generateResponse(const HttpRequest& request);
+        HttpResponseGenerator(const HttpRequest& request);
+
+        HttpResponse generateResponse();
 
     private:
+        void generateStatusLine();
+        void generateResponseHeaders();
+        void generateResponseBody();
+
+        HttpRequest m_HttpRequest;
+        HttpResponse m_HttpResponse;
+        utils::HttpStatusCode m_CurrentStatus;
     };
 }

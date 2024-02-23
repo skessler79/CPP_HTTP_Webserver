@@ -1,6 +1,7 @@
 #include <fstream>
 #include <unistd.h>
 #include <sstream>
+#include <thread>
 
 #include "Config.hpp"
 #include "server/include/HttpServer.hpp"
@@ -33,20 +34,12 @@ void server::HttpServer::start()
         utils::Socket newSock = m_Socket.accept();
 
         server::TcpConnection connection(std::move(newSock));
-        connection.handleConnection();
 
-        // std::string readBuffer = newSock.read();
-
-        // // Parse HTTP request
-        // utils::HttpRequest httpRequest = utils::HttpRequestParser::parseRequest(readBuffer);
-
-        // // Generate HTTP response
-        // utils::HttpResponse httpResponse;
-        // std::string hello = httpResponse.makeFullResponse();
-
-        // // Write HTTP response to socket
-        // newSock.write(hello);
-
-        printf("-----Hello message sent-----\n");
+        // Run handleConnection on it's own thread
+        std::thread([connection = std::move(connection)]() mutable
+        {
+            connection.handleConnection();
+            printf("-----Hello message sent-----\n");
+        }).detach(); // Detach thread to allow it to run independently
     }
 }

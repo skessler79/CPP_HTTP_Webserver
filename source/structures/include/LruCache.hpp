@@ -5,6 +5,8 @@
 #include <cstdint>
 #include <optional>
 
+// TODO : This thing is probably not thread safe now
+
 namespace SK
 {
     template<typename K, typename V>
